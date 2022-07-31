@@ -86,16 +86,17 @@ home_keyboard_pm = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton(
-                text=" ➕ Add Me To Your Group ➕ ",
+                text=" 💥* ᴀᴅᴅ ᴍᴇ ᴛᴏ ᴜʀ ʜᴇᴀʀᴛ *💥 ",
                 url=f"http://t.me/{BOT_USERNAME}?startgroup=new",
             )
         ],
         [
            InlineKeyboardButton(
-                text=" ℹ️ About", callback_data="_about"
-            ),
+                text=" 🔱 * ᴄʀᴇᴀᴛᴏʀ * 🔱",
+                url=f"https://t.me/Can_si_mi", 
+	   ),
             InlineKeyboardButton(
-                text="🌍 languages ", callback_data="_langs"
+                text=" 💻 * ʟᴀɴɢᴜᴀɢᴇs *  💻 ", callback_data="_langs"
             ),
         ],
         [
@@ -105,12 +106,12 @@ home_keyboard_pm = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton(
-                text="🌐 Website",
-                url=f"https://szrosebot.ml",
+                text= "💐* Oᴜʀ ғᴇᴅʀᴀᴛɪᴏɴ *💐",
+                url=f"https://t.me/teamripfed",
             ),
             InlineKeyboardButton(
-                text="🔰 News Channel",
-                url=f"https://t.me/szroseupdates",
+                text="🔰ᴀʙᴏᴜᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ",
+                url=f"https://t.me/pattuoffical",
             )
         ],
     ]
@@ -120,7 +121,7 @@ keyboard = InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton(
-                text="📚 Commands & help",
+                text="🙂 Commands & help",
                 url=f"t.me/{BOT_USERNAME}?start=help",
             )
         ]
@@ -165,7 +166,8 @@ async def start(client, message: Message, _):
     else:
         await message.reply(f"""
 Hey there {message.from_user.mention}, 
-My name is {BOT_NAME} an  advanced telegram Group management Bot For helpYou Protect Your Groups & Suit For All Your Needs.feel free to add me to your groups!
+ᴍʏ ɴᴀᴍᴇ ɪs {BOT_NAME} 🔱  ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ғᴏʀ ᴜ ɢʀᴏᴜᴘ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ ᴀʟʟ ʏᴏᴜʀ ɴᴇᴇᴅs . Fᴇᴇʟ ғʀᴇᴇ ᴛᴏ ᴀᴅᴅ ᴍᴇ ᴛᴏ ᴜʀ ᴋɪɴɢᴅᴏᴍ 🔱!
+""",reply_markup=home_keyboard_pm)
 """,reply_markup=home_keyboard_pm)
         return await add_served_user(chat_id) 
 
@@ -249,7 +251,8 @@ async def startcq(client,CallbackQuery, _):
     await CallbackQuery.message.edit(
             text=f"""
 Hey there {CallbackQuery.from_user.mention}, 
-My name is Rose an  advanced telegram Group management Bot For helpYou Protect Your Groups & Suit For All Your Needs.feel free to add me to your groups!
+ ᴍʏ ɴᴀᴍᴇ ɪs  ᴘᴀᴛᴛᴜ x ɢᴏᴅ 🔱  ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ғᴏʀ ᴜ ɢʀᴏᴜᴘ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ ᴀʟʟ ʏᴏᴜʀ ɴᴇᴇᴅs . Fᴇᴇʟ ғʀᴇᴇ ᴛᴏ ᴀᴅᴅ ᴍᴇ ᴛᴏ ᴜʀ ᴋɪɴɢᴅᴏᴍ 🔱!
+""",reply_markup=home_keyboard_pm)
 """,disable_web_page_preview=True,reply_markup=home_keyboard_pm)
 
 
@@ -262,7 +265,7 @@ async def help_parser(name, keyboard=None):
 I'm a group management bot with some useful features.
 You can choose an option below, by clicking a button.
 If you have any bugs or questions on how to use me, 
-have a look at my [Docs](https://szsupunma.gitbook.io/rose-bot/), or head to @szteambots.
+have a look at my [PATTU](https://t.me/Can_si_mi), or head to @mirachlesupport.
 
 **All commands can be used with the following: / **""",keyboard,)
 
@@ -303,7 +306,7 @@ async def help_button(client, query, _):
                 "Here is the help for", HELPABLE[module].__MODULE__
             )
             + HELPABLE[module].__HELP__
-            + "\n👨‍💻Dᴇᴠᴇʟᴏᴘᴇʀ : @supunma"
+            + "\n👨‍💻Dᴇᴠᴇʟᴏᴘᴇʀ :@Can_si_mi"
         )
         if hasattr(HELPABLE[module], "__helpbtns__"):
                        button = (HELPABLE[module].__helpbtns__) + [[InlineKeyboardButton("« Back", callback_data="bot_commands")]]
