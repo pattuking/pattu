@@ -170,7 +170,6 @@ Hey there {message.from_user.mention},
 """
 
 reply_markup=home_keyboard_pm)
-    return await add_served_user(chat_id)
 
 @app.on_message(filters.command(HELP_COMMAND))
 @language
