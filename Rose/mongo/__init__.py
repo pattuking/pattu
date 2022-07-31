@@ -1,9 +1,11 @@
 from sys import exit as exiter
+
+import pymongo
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
-from Rose import DB_URI
+
 from Rose import *
-import pymongo
+from Rose import DB_URI
 
 langdb = db.language
 chatsdb = db.chats
@@ -15,7 +17,7 @@ restartdb = db.restart_stage
 chatb = db.chatbot
 kukib = db.kuki
 lunab = db.luna
-nightmod =db.nightmode2
+nightmod = db.nightmode2
 taggeddb = db.tagallert
 lockdb = db.lockdb1
 botlock = db.botlock
@@ -24,8 +26,8 @@ afkusers = db.afkusers
 myapp = pymongo.MongoClient(MONGO_URL)
 dbx = myapp["AsyncIOMotorCursor"]
 
-federation = dbx['federation']
-nm = dbx['Nightmode']
+federation = dbx["federation"]
+nm = dbx["Nightmode"]
 
 try:
     client = MongoClient(DB_URI)
@@ -35,7 +37,6 @@ main_db = client["maindb"]
 
 
 class MongoDB:
-
     def __init__(self, collection) -> None:
         self.collection = main_db[collection]
 

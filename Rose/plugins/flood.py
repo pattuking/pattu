@@ -1,27 +1,40 @@
 from asyncio import get_running_loop, sleep
 from time import time
+
 from pyrogram import filters
 from pyrogram.types import (
     ChatPermissions,
-    InlineKeyboardButton, 
+    InlineKeyboardButton,
     InlineKeyboardMarkup,
-    Message)
-from Rose import app
-from Rose.mongo.flooddb import is_flood_on,flood_off,flood_on
-from Rose.utils.filter_groups import flood_group
-from lang import get_command
-from Rose.utils.custom_filters import admin_filter
+    Message,
+)
+
 from button import Protection
+from lang import get_command
+from Rose import app
+from Rose.mongo.flooddb import flood_off, flood_on, is_flood_on
+from Rose.utils.custom_filters import admin_filter
+from Rose.utils.filter_groups import flood_group
 
 FLOOD = get_command("FLOOD")
 DB = {}
+
 
 def reset_flood(chat_id, user_id=0):
     for user in DB[chat_id].keys():
         if user != user_id:
             DB[chat_id][user] = 0
 
-@app.on_message(~filters.service & ~filters.me & ~filters.private & ~filters.channel & ~filters.bot & ~filters.edited, group=flood_group)
+
+@app.on_message(
+    ~filters.service
+    & ~filters.me
+    & ~filters.private
+    & ~filters.channel
+    & ~filters.bot
+    & ~filters.edited,
+    group=flood_group,
+)
 async def flood_control_func(_, message: Message):
     if not message.chat:
         return
@@ -42,26 +55,41 @@ async def flood_control_func(_, message: Message):
         DB[chat_id][user_id] = 0
         try:
             adminx = await app.get_chat_member(chat_id, user_id)
-            if (adminx.status == "administrator" and adminx.status == "creator"):
-              return
-            await message.chat.restrict_member(user_id,permissions=ChatPermissions(),until_date=int(time() + 5))
+            if adminx.status == "administrator" and adminx.status == "creator":
+                return
+            await message.chat.restrict_member(
+                user_id, permissions=ChatPermissions(), until_date=int(time() + 5)
+            )
         except Exception:
             return
-        keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(text="Unmute 🔇",callback_data=f"_unmute_{user_id}")]])
-        m = await message.reply_text(f"Yeah, I don't like your flooding. Quiet now {mention}, Muted  for 5 sec",reply_markup=keyboard,)
+        keyboard = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Unmute 🔇", callback_data=f"_unmute_{user_id}"
+                    )
+                ]
+            ]
+        )
+        m = await message.reply_text(
+            f"Yeah, I don't like your flooding. Quiet now {mention}, Muted  for 5 sec",
+            reply_markup=keyboard,
+        )
+
         async def delete():
             await sleep(300)
             try:
                 await m.delete()
             except Exception:
                 pass
+
         loop = get_running_loop()
         return loop.create_task(delete())
     DB[chat_id][user_id] += 1
 
 
 @app.on_message(filters.command("antiflood") & admin_filter)
-async def flood_toggle(_, message: Message):  
+async def flood_toggle(_, message: Message):
     if len(message.command) != 2:
         return await message.reply_text("Usage: /antiflood `on` or `off`")
     status = message.text.split(None, 1)[1].strip()
@@ -76,6 +104,7 @@ async def flood_toggle(_, message: Message):
     else:
         return await message.reply_text("Usage: /antiflood `on` or `off`")
 
+
 __MODULE__ = Protection
 __HELP__ = """
 Here is the help for Anti-Function :
@@ -87,18 +116,10 @@ Here is the help for Anti-Function :
 
 Group's Anti-Function is also an very essential fact to consider in group management
 Anti-Function is the inbuilt toolkit in Rose for avoid spammers, and to improve Anti-Function of your group"""
-__helpbtns__ = (
-        [[
-            InlineKeyboardButton
-                (
-                    "Anti-service", callback_data="_anssx"
-                ),           
-            InlineKeyboardButton
-                (
-                    "Anti-language", callback_data="_anl"
-                )
-        ],
-        [
-            InlineKeyboardButton('Anti-Flood', callback_data='_fld')
-        ]]
-)
+__helpbtns__ = [
+    [
+        InlineKeyboardButton("Anti-service", callback_data="_anssx"),
+        InlineKeyboardButton("Anti-language", callback_data="_anl"),
+    ],
+    [InlineKeyboardButton("Anti-Flood", callback_data="_fld")],
+]

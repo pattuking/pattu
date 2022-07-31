@@ -1,9 +1,11 @@
+from os import remove
 
 import requests
-from Rose import app
-from os import remove         
-from Rose.utils.commands import command
 from pyrogram.types import Message
+
+from Rose import app
+from Rose.utils.commands import command
+
 
 @app.on_message(command("nsfwscan"))
 async def nsfw_scan_command(_, message: Message):
@@ -27,12 +29,14 @@ async def nsfw_scan_command(_, message: Message):
         return await m.edit("Something went wrong.")
     file = await app.download_media(file_id)
     try:
-        data = requests.post(f"https://api.safone.tech/nsfw", files={'image': open(file, 'rb')}).json()
-        is_nsfw = data['data']['is_nsfw']
-        hentai = data['data']['hentai']
-        drawings = data['data']['drawings']
-        porn = data['data']['porn']
-        sexy = data['data']['sexy']
+        data = requests.post(
+            f"https://api.safone.tech/nsfw", files={"image": open(file, "rb")}
+        ).json()
+        is_nsfw = data["data"]["is_nsfw"]
+        hentai = data["data"]["hentai"]
+        drawings = data["data"]["drawings"]
+        porn = data["data"]["porn"]
+        sexy = data["data"]["sexy"]
     except Exception as e:
         return await m.edit(str(e))
     remove(file)
@@ -46,8 +50,9 @@ async def nsfw_scan_command(_, message: Message):
 • **Sexy:** `{sexy} %`
 • **Drawings:** `{drawings} %`
 • **NSFW:** `{is_nsfw}`
-========================== """)
-    
+========================== """
+    )
+
 
 @app.on_message(command("spamscan"))
 async def scanNLP(_, message: Message):
@@ -57,11 +62,13 @@ async def scanNLP(_, message: Message):
     text = r.text or r.caption
     if not text:
         return await message.reply("Can't scan that")
-    data = requests.post(f"https://api.safone.tech/spam", json={'text': message.text}).json()
-    is_spam = data['data']['is_spam']
-    spam_probability = data['data']['spam_probability']
-    spam = data['data']['spam']
-    ham = data['data']['ham']
+    data = requests.post(
+        f"https://api.safone.tech/spam", json={"text": message.text}
+    ).json()
+    is_spam = data["data"]["is_spam"]
+    spam_probability = data["data"]["spam_probability"]
+    spam = data["data"]["spam"]
+    ham = data["data"]["ham"]
     msg = f"""
 **SPAM** scan Result Here ✅
 ==========================    
@@ -71,6 +78,7 @@ async def scanNLP(_, message: Message):
 • **Ham:** `{ham}`
 =========================="""
     await message.reply(msg, quote=True)
+
 
 def get_file_id(message):
     if message.document:
@@ -100,11 +108,14 @@ def get_file_id(message):
         if not message.video.thumbs:
             return
         return message.video.thumbs[0].file_id
-  
+
 
 async def admins(chat_id: int):
-    return [ member.user.id
-        async for member in app.iter_chat_members(chat_id, filter="administrators")]
+    return [
+        member.user.id
+        async for member in app.iter_chat_members(chat_id, filter="administrators")
+    ]
+
 
 def get_file_unique_id(message):
     m = message

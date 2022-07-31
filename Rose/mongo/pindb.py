@@ -1,4 +1,5 @@
 from threading import RLock
+
 from Rose.mongo import MongoDB
 
 INSERTION_LOCK = RLock()
@@ -66,6 +67,3 @@ class Pins(MongoDB):
         new_data = old_chat_db.update({"_id": new_chat_id})
         self.insert_one(new_data)
         self.delete_one({"_id": self.chat_id})
-
-
-       

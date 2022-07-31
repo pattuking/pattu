@@ -1,5 +1,6 @@
 from Rose.mongo import restartdb
 
+
 async def start_restart_stage(chat_id: int, message_id: int):
     await restartdb.update_one(
         {"something": "something"},
@@ -11,6 +12,7 @@ async def start_restart_stage(chat_id: int, message_id: int):
         },
         upsert=True,
     )
+
 
 async def clean_restart_stage() -> dict:
     data = await restartdb.find_one({"something": "something"})

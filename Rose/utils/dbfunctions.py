@@ -1,8 +1,7 @@
-
-
 import codecs
 import pickle
 from typing import Dict, List, Union
+
 from Rose import db
 
 restart_stagedb = db.restart_stage
@@ -21,6 +20,7 @@ lockurl = db.locksu
 captchadb = db.botlock
 chatsdb = db.chats
 usersdb = db.users
+
 
 async def is_served_chat(chat_id: int) -> bool:
     chat = await chatsdb.find_one({"chat_id": chat_id})
@@ -75,6 +75,8 @@ async def add_served_user(user_id: int):
     if is_served:
         return
     return await usersdb.insert_one({"user_id": user_id})
+
+
 async def is_b_on(chat_id: int) -> bool:
     chat = await captchadb.find_one({"chat_id": chat_id})
     if not chat:
@@ -94,6 +96,7 @@ async def b_on(chat_id: int):
     if is_captcha:
         return
     return await captchadb.insert_one({"chat_id": chat_id})
+
 
 def add_chat(chat_id):
     stark = lockurl.find_one({"chat_id": chat_id})
@@ -129,14 +132,13 @@ def get_session(chat_id):
         return stark
 
 
-
-
 def get_all_chat_id():
     r = list(nightdb.find())
     if r:
         return r
     else:
         return False
+
 
 def obj_to_str(obj):
     if not obj:
@@ -149,7 +151,8 @@ def str_to_obj(string: str):
     obj = pickle.loads(codecs.decode(string.encode(), "base64"))
     return obj
 
-#1
+
+# 1
 async def start_restart_stage(chat_id: int, message_id: int):
     await restart_stagedb.update_one(
         {"something": "something"},
@@ -161,7 +164,9 @@ async def start_restart_stage(chat_id: int, message_id: int):
         },
         upsert=True,
     )
-#2
+
+
+# 2
 async def is_captcha_on(chat_id: int) -> bool:
     chat = await captchadb.find_one({"chat_id": chat_id})
     if not chat:
@@ -197,6 +202,7 @@ async def save_captcha_solved(chat_id: int, user_id: int):
         upsert=True,
     )
 
+
 async def update_captcha_cache(captcha_dict):
     pickle = obj_to_str(captcha_dict)
     await captcha_cachedb.delete_one({"captcha": "cache"})
@@ -215,7 +221,8 @@ async def get_captcha_cache():
         return []
     return str_to_obj(cache["pickled"])
 
-#3
+
+# 3
 async def is_flood_on(chat_id: int) -> bool:
     chat = await flood_toggle_db.find_one({"chat_id": chat_id})
     if not chat:
@@ -236,7 +243,8 @@ async def flood_off(chat_id: int):
         return
     return await flood_toggle_db.insert_one({"chat_id": chat_id})
 
-#4
+
+# 4
 async def get_warns_count() -> dict:
     chats = warnsdb.find({"chat_id": {"$lt": 0}})
     if not chats:
@@ -287,7 +295,8 @@ async def remove_warns(chat_id: int, name: str) -> bool:
         return True
     return False
 
-#5
+
+# 5
 async def is_antiservice_on(chat_id: int) -> bool:
     chat = await antiservicedb.find_one({"chat_id": chat_id})
     if not chat:
@@ -308,15 +317,19 @@ async def antiservice_off(chat_id: int):
         return
     return await antiservicedb.insert_one({"chat_id": chat_id})
 
-#6
+
+# 6
 
 # To on / off / get anti functions
 async def set_anti_func(chat_id, status, mode):
     anti_f = await nexaub_antif.find_one({"_id": chat_id})
     if anti_f:
-        await nexaub_antif.update_one({"_id": chat_id}, {"$set": {"status": status, "mode": mode}})
+        await nexaub_antif.update_one(
+            {"_id": chat_id}, {"$set": {"status": status, "mode": mode}}
+        )
     else:
         await nexaub_antif.insert_one({"_id": chat_id, "status": status, "mode": mode})
+
 
 async def get_anti_func(chat_id):
     anti_f = await nexaub_antif.find_one({"_id": chat_id})
@@ -326,6 +339,7 @@ async def get_anti_func(chat_id):
         snm = [anti_f["status"], anti_f["mode"]]
         return snm
 
+
 async def del_anti_func(chat_id):
     anti_f = await nexaub_antif.find_one({"_id": chat_id})
     if anti_f:
@@ -333,9 +347,9 @@ async def del_anti_func(chat_id):
         return True
     else:
         return False
-    
-    
-#7
+
+
+# 7
 async def clean_restart_stage() -> dict:
     data = await restart_stagedb.find_one({"something": "something"})
     if not data:
@@ -345,6 +359,8 @@ async def clean_restart_stage() -> dict:
         "chat_id": data["chat_id"],
         "message_id": data["message_id"],
     }
+
+
 async def int_to_alpha(user_id: int) -> str:
     alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
     text = ""
@@ -362,6 +378,7 @@ async def alpha_to_int(user_id_alphabet: str) -> int:
         user_id += str(index)
     user_id = int(user_id)
     return user_id
+
 
 async def get_filters_count() -> dict:
     chats = filtersdb.find({"chat_id": {"$lt": 0}})
@@ -425,17 +442,20 @@ async def delete_filter(chat_id: int, name: str) -> bool:
         return True
     return False
 
+
 async def is_using_rose(user_id):
     chat = usersdb.find_one({"user_id": user_id})
     if not chat:
         return False
     return True
 
+
 async def add_user(user_id):
     is_using = await is_using_rose(user_id)
     if is_using:
         return
-    return await usersdb.insert_one({"user_id": user_id}) 
+    return await usersdb.insert_one({"user_id": user_id})
+
 
 async def remove_user(user_id):
     is_using = await is_using_rose(user_id)
@@ -443,23 +463,27 @@ async def remove_user(user_id):
         return
     return await usersdb.delete_one({"user_id": user_id})
 
+
 async def is_rose_in_groups(group_id):
     chat = groupsdb.find_one({"group_id": group_id})
     if not chat:
         return False
     return True
 
+
 async def add_group(group_id):
     is_using = await is_rose_in_groups(group_id)
     if is_using:
         return
-    return await groupsdb.insert_one({"group_id": group_id}) 
+    return await groupsdb.insert_one({"group_id": group_id})
+
 
 async def remove_group(group_id):
     is_using = await is_rose_in_groups(group_id)
     if not is_using:
         return
     return await groupsdb.delete_one({"group_id": group_id})
+
 
 async def all_users() -> list:
     chats = usersdb.find({})
@@ -469,6 +493,7 @@ async def all_users() -> list:
     for chat in await chats.to_list(length=1000000000):
         chats_list.append(chat)
     return chats_list
+
 
 async def all_groups() -> list:
     chats = usersdb.find({})

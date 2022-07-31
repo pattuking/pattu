@@ -1,4 +1,5 @@
 from threading import RLock
+
 from Rose.mongo import MongoDB
 
 INSERTION_LOCK = RLock()
@@ -6,7 +7,7 @@ INSERTION_LOCK = RLock()
 
 class Greetings(MongoDB):
     db_name = "welcome_chats"
-    
+
     def __init__(self, chat_id: int) -> None:
         super().__init__(self.db_name)
         self.chat_id = chat_id
@@ -35,6 +36,7 @@ class Greetings(MongoDB):
     def get_welcome_text(self):
         with INSERTION_LOCK:
             return self.chat_info["welcome_text"]
+
     def get_goodbye_text(self):
         with INSERTION_LOCK:
             return self.chat_info["goodbye_text"]
@@ -55,17 +57,17 @@ class Greetings(MongoDB):
         with INSERTION_LOCK:
             return self.update({"_id": self.chat_id}, {"goodbye": status})
 
-    def set_welcome_text(self, welcome_text: str,fileid=""):
+    def set_welcome_text(self, welcome_text: str, fileid=""):
         with INSERTION_LOCK:
-            return self.update(
-                {"_id": self.chat_id},
-                {"welcome_text": welcome_text})
+            return self.update({"_id": self.chat_id}, {"welcome_text": welcome_text})
+
     def set_goodbye_text(self, goodbye_text: str):
         with INSERTION_LOCK:
             return self.update(
                 {"_id": self.chat_id},
                 {"goodbye_text": goodbye_text},
             )
+
     def set_current_cleanservice_settings(self, status: bool):
         with INSERTION_LOCK:
             return self.update(
@@ -111,8 +113,8 @@ class Greetings(MongoDB):
                 "cleangoodbye_id": None,
                 "cleangoodbye": False,
                 "cleanservice": False,
-                "goodbye_text": 'Sad to see you leaving {first}.\nTake Care!',
-                "welcome_text": 'Hey {first}, welcome to {chatname}!',
+                "goodbye_text": "Sad to see you leaving {first}.\nTake Care!",
+                "welcome_text": "Hey {first}, welcome to {chatname}!",
                 "welcome": False,
                 "goodbye": False,
             }

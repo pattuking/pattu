@@ -2,12 +2,14 @@ from re import compile as compile_re
 from re import escape
 from shlex import split
 from typing import List, Union
+
 from pyrogram.errors import RPCError, UserNotParticipant
 from pyrogram.filters import create
 from pyrogram.types import CallbackQuery, Message
+
 from Rose import *
-from Rose.mongo.disabledb import DISABLED_CMDS
 from Rose.core.caching import ADMIN_CACHE, admin_cache_reload
+from Rose.mongo.disabledb import DISABLED_CMDS
 
 DEV_USERS = ""
 OWNER_ID = DEV_USERS
@@ -16,6 +18,7 @@ BOT = "@szrosebot"
 COMMAND = "/"
 SUDO_LEVEL = set(SUDO_USERS + DEV_USERS + OWNER_ID)
 DEV_LEVEL = set(DEV_USERS + OWNER_ID)
+
 
 def command(
     commands: Union[str, List[str]],
@@ -42,7 +45,7 @@ def command(
             return False
         regex = r"^[{prefix}](\w+)(@{bot_name})?(?: |$)(.*)".format(
             prefix="|".join(escape(x) for x in COMMAND),
-            bot_name= BOT,
+            bot_name=BOT,
         )
         matches = compile_re(regex).search(text)
         if matches:
@@ -90,7 +93,9 @@ def command(
         commands=commands,
         case_sensitive=case_sensitive,
     )
-#=================================================================
+
+
+# =================================================================
 async def bot_admin_check_func(_, __, m: Message or CallbackQuery):
     if isinstance(m, CallbackQuery):
         m = m.message
@@ -113,7 +118,9 @@ async def bot_admin_check_func(_, __, m: Message or CallbackQuery):
         "I don't have enough permissions",
     )
     return False
-#=================================================================
+
+
+# =================================================================
 
 
 async def admin_check_func(_, __, m: Message or CallbackQuery):
@@ -160,6 +167,7 @@ async def owner_check_func(_, __, m: Message or CallbackQuery):
 
     return status
 
+
 async def restrict_check_func(_, __, m: Message or CallbackQuery):
     if isinstance(m, CallbackQuery):
         m = m.message
@@ -172,7 +180,9 @@ async def restrict_check_func(_, __, m: Message or CallbackQuery):
         status = True
     else:
         status = False
-        await m.reply_text(f"{m.from_user.mention},you need to be an admin with restrict members permission")
+        await m.reply_text(
+            f"{m.from_user.mention},you need to be an admin with restrict members permission"
+        )
 
     return status
 
@@ -189,7 +199,9 @@ async def promote_check_func(_, __, m):
         status = True
     else:
         status = False
-        await m.reply_text(f"{m.from_user.mention},you need to be an admin with add new admin permission")
+        await m.reply_text(
+            f"{m.from_user.mention},you need to be an admin with add new admin permission"
+        )
     return status
 
 
@@ -208,7 +220,9 @@ async def changeinfo_check_func(_, __, m):
         status = True
     else:
         status = False
-        await m.reply_text(f"{m.from_user.mention},you need to be an admin with **can_change_info permission** permission")
+        await m.reply_text(
+            f"{m.from_user.mention},you need to be an admin with **can_change_info permission** permission"
+        )
     return status
 
 
@@ -227,7 +241,9 @@ async def can_pin_message_func(_, __, m):
         status = True
     else:
         status = False
-        await m.reply_text(f"{m.from_user.mention},you need to be an admin with **can_pin_messages permission** permission")
+        await m.reply_text(
+            f"{m.from_user.mention},you need to be an admin with **can_pin_messages permission** permission"
+        )
     return status
 
 

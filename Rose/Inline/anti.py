@@ -1,6 +1,7 @@
-from Rose import bot as app
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+from Rose import bot as app
 
 supunm = """
 Delete messages containing characters from one of the following automatically
@@ -24,6 +25,7 @@ Delete messages containing characters from one of the following automatically
            it will delete and user send 3 warn and after ban him    
 """
 
+
 @app.on_callback_query(filters.regex("_anl"))
 async def commands_callbacc(_, CallbackQuery):
     await app.send_message(
@@ -42,6 +44,8 @@ Voice Chat Invite Members Allerts ETC..
 
 - /antiservice [enable|disable]
 """
+
+
 @app.on_callback_query(filters.regex("_anss"))
 async def commands_callbacc(_, CallbackQuery):
     await app.send_message(
@@ -50,8 +54,8 @@ async def commands_callbacc(_, CallbackQuery):
         reply_markup=close,
         disable_web_page_preview=True,
     )
-    await CallbackQuery.message.delete() 
-    
+    await CallbackQuery.message.delete()
+
 
 fucks = """
 Anti-Flood system, the one who sends more than 10 messages in a row, gets muted for an hour (Except for admins).
@@ -59,6 +63,8 @@ Anti-Flood system, the one who sends more than 10 messages in a row, gets muted 
 **Admin commands:**
 - /antiflood[on/off]: Turn flood detection on or off
 """
+
+
 @app.on_callback_query(filters.regex("_fld"))
 async def commands_callbacc(_, CallbackQuery):
     await app.send_message(
@@ -67,32 +73,22 @@ async def commands_callbacc(_, CallbackQuery):
         reply_markup=close,
         disable_web_page_preview=True,
     )
-    await CallbackQuery.message.delete() 
+    await CallbackQuery.message.delete()
+
 
 close = InlineKeyboardMarkup(
-        [[
-            InlineKeyboardButton('« Back', callback_data='_bvk')
-        ]], 
+    [[InlineKeyboardButton("« Back", callback_data="_bvk")]],
 )
 
 
 asuttons = InlineKeyboardMarkup(
-        [[
-            InlineKeyboardButton
-                (
-                    "Anti-service", callback_data="_anssx"
-                ),           
-            InlineKeyboardButton
-                (
-                    "Anti-language", callback_data="_anl"
-                )
+    [
+        [
+            InlineKeyboardButton("Anti-service", callback_data="_anssx"),
+            InlineKeyboardButton("Anti-language", callback_data="_anl"),
         ],
-        [
-            InlineKeyboardButton('Anti-Flood', callback_data='_fld')
-        ], 
-        [
-            InlineKeyboardButton('« Back', callback_data='bot_commands')
-        ], 
+        [InlineKeyboardButton("Anti-Flood", callback_data="_fld")],
+        [InlineKeyboardButton("« Back", callback_data="bot_commands")],
     ]
 )
 
@@ -114,4 +110,4 @@ async def commands_callbacc(_, CallbackQuery):
         reply_markup=asuttons,
         disable_web_page_preview=True,
     )
-    await CallbackQuery.message.delete() 
+    await CallbackQuery.message.delete()

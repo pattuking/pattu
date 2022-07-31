@@ -1,10 +1,11 @@
 from threading import RLock
-from time import time
+
 from Rose.mongo import MongoDB
 
 INSERTION_LOCK = RLock()
 
 from Rose.mongo import usersdb
+
 
 class Users(MongoDB):
     db_name = "users"
@@ -27,7 +28,6 @@ class Users(MongoDB):
         with INSERTION_LOCK:
             return self.delete_one({"_id": self.user_id})
 
-
     def count_users():
         with INSERTION_LOCK:
             collection = MongoDB(Users.db_name)
@@ -41,7 +41,6 @@ class Users(MongoDB):
         with INSERTION_LOCK:
             collection = MongoDB(Users.db_name)
             return collection.find_all()
-
 
     def get_user_info(user_id: int or str):
         with INSERTION_LOCK:
@@ -58,12 +57,14 @@ class Users(MongoDB):
 
             return {}
 
-#users main
+
+# users main
 async def is_served_user(user_id: int) -> bool:
     user = await usersdb.find_one({"bot_users": user_id})
     if not user:
         return False
     return True
+
 
 async def get_served_users() -> list:
     users = usersdb.find({"bot_users": {"$gt": 0}})
@@ -81,18 +82,21 @@ async def add_served_user(user_id: int):
         return
     return await usersdb.insert_one({"bot_users": user_id})
 
+
 async def remove_served_user(user_id: int):
     is_served = await is_served_user(user_id)
     if is_served:
         return
     return await usersdb.delete_one({"bot_users": user_id})
 
-#--------------------------------------------------------
+
+# --------------------------------------------------------
 async def iss_served_user(user_id: int) -> bool:
     user = await usersdb.find_one({"bots_users": user_id})
     if not user:
         return False
     return True
+
 
 async def gets_served_users() -> list:
     users = usersdb.find({"bots_users": {"$gt": 0}})
@@ -109,6 +113,7 @@ async def adds_served_user(user_id: int):
     if is_served:
         return
     return await usersdb.insert_one({"bots_users": user_id})
+
 
 async def removes_served_user(user_id: int):
     is_served = await is_served_user(user_id)

@@ -1,5 +1,7 @@
 from enum import IntEnum, unique
+
 from pyrogram.types import Message
+
 
 @unique
 class Types(IntEnum):

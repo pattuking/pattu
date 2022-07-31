@@ -1,14 +1,17 @@
 from html import escape as escape_html
+
 from pyrogram.types import Message
-from Rose import app,LOG_GROUP_ID
+
+from button import Pin
+from Rose import LOG_GROUP_ID, app
 from Rose.mongo.pindb import Pins
 from Rose.utils.custom_filters import admin_filter, command
 from Rose.utils.kbhelpers import rkb as ikb
-from Rose.utils.string import build_keyboard, parse_button
 from Rose.utils.lang import language
-from button import Pin
+from Rose.utils.string import build_keyboard, parse_button
 
-@app.on_message(command("pin") & admin_filter )
+
+@app.on_message(command("pin") & admin_filter)
 @language
 async def pin_message(client, message: Message, _):
     pin_args = message.text.split(None, 1)
@@ -17,18 +20,24 @@ async def pin_message(client, message: Message, _):
             disable_notification = True
             if len(pin_args) >= 2 and pin_args[1] in ["alert", "notify", "loud"]:
                 disable_notification = False
-            await message.reply_to_message.pin(disable_notification=disable_notification)
+            await message.reply_to_message.pin(
+                disable_notification=disable_notification
+            )
             if message.chat.username:
                 link_chat_id = message.chat.username
-                message_link = (f"https://t.me/{link_chat_id}/{message.reply_to_message.message_id}")
+                message_link = (
+                    f"https://t.me/{link_chat_id}/{message.reply_to_message.message_id}"
+                )
             elif (str(message.chat.id)).startswith("-100"):
                 link_chat_id = (str(message.chat.id)).replace("-100", "")
-                message_link = (f"https://t.me/c/{link_chat_id}/{message.reply_to_message.message_id}")
-            await message.reply_text(_["pin1"].format(message_link),disable_web_page_preview=True)
+                message_link = f"https://t.me/c/{link_chat_id}/{message.reply_to_message.message_id}"
+            await message.reply_text(
+                _["pin1"].format(message_link), disable_web_page_preview=True
+            )
         except Exception as e:
-                await app.send_message(LOG_GROUP_ID,text=e)   
+            await app.send_message(LOG_GROUP_ID, text=e)
     else:
-            await message.reply_text(_["pin4"])
+        await message.reply_text(_["pin4"])
     return
 
 
@@ -37,23 +46,28 @@ async def pin_message(client, message: Message, _):
 async def unpin_message(client, message: Message, _):
     try:
         if message.reply_to_message:
-            await app.unpin_chat_message(message.chat.id, message.reply_to_message.message_id)
+            await app.unpin_chat_message(
+                message.chat.id, message.reply_to_message.message_id
+            )
             await message.reply_text(_["pin5"])
         else:
             await app.unpin_chat_message(message.chat.id)
             await message.reply_text(_["pin6"])
     except Exception as e:
-            return await app.send_message(LOG_GROUP_ID,text=e)  
+        return await app.send_message(LOG_GROUP_ID, text=e)
+
 
 @app.on_message(command("unpinall") & admin_filter)
 @language
 async def unpinall_message(client, message: Message, _):
     user_id = message.from_user.id
-    return await message.reply_text(_["pin9"],reply_markup=ikb([[("Yes", f"unpinallcb:{user_id}"), ("No", "close_admin")]]),)
-    
+    return await message.reply_text(
+        _["pin9"],
+        reply_markup=ikb([[("Yes", f"unpinallcb:{user_id}"), ("No", "close_admin")]]),
+    )
 
 
-@app.on_message(command("antichannelpin") & admin_filter )
+@app.on_message(command("antichannelpin") & admin_filter)
 @language
 async def anti_channel_pin(client, message: Message, _):
     pinsdb = Pins(message.chat.id)
@@ -63,22 +77,25 @@ async def anti_channel_pin(client, message: Message, _):
     if len(message.text.split()) == 2:
         if message.command[1] in ("yes", "on", "true"):
             pinsdb.antichannelpin_on()
-            msg = ("**Enabled** anti channel pins. Automatic pins from a channel will now be replaced with the previous pin.")
+            msg = "**Enabled** anti channel pins. Automatic pins from a channel will now be replaced with the previous pin."
         elif message.command[1] in ("no", "off", "false"):
             pinsdb.antichannelpin_off()
-            msg = ("**Disabled** anti channel pins. Automatic pins from a channel will not be removed.")
+            msg = "**Disabled** anti channel pins. Automatic pins from a channel will not be removed."
         else:
             return await message.reply_text(_["pin18"])
     return await message.reply_text(msg)
-    
 
 
-@app.on_message(command("pinned") & admin_filter )
+@app.on_message(command("pinned") & admin_filter)
 @language
 async def pinned_message(client, message: Message, _):
     chat_title = message.chat.title
     chat = await app.get_chat(chat_id=message.chat.id)
-    msg_id = message.reply_to_message.message_id if message.reply_to_message else message.message_id
+    msg_id = (
+        message.reply_to_message.message_id
+        if message.reply_to_message
+        else message.message_id
+    )
     if chat.pinned_message:
         pinned_id = chat.pinned_message.message_id
         if message.chat.username:
@@ -87,12 +104,16 @@ async def pinned_message(client, message: Message, _):
         elif (str(message.chat.id)).startswith("-100"):
             link_chat_id = (str(message.chat.id)).replace("-100", "")
             message_link = f"https://t.me/c/{link_chat_id}/{pinned_id}"
-        await message.reply_text(f"The pinned message of {escape_html(chat_title)} is [here]({message_link}).",reply_to_message_id=msg_id,disable_web_page_preview=True)
+        await message.reply_text(
+            f"The pinned message of {escape_html(chat_title)} is [here]({message_link}).",
+            reply_to_message_id=msg_id,
+            disable_web_page_preview=True,
+        )
     else:
         await message.reply_text(_["pin24"])
 
 
-@app.on_message(command("cleanlinked") & admin_filter )
+@app.on_message(command("cleanlinked") & admin_filter)
 @language
 async def clean_linked(client, message: Message, _):
     pinsdb = Pins(message.chat.id)
@@ -109,10 +130,9 @@ async def clean_linked(client, message: Message, _):
         else:
             return await message.reply_text(_["pin18"])
     return await message.reply_text(msg)
-    
 
 
-@app.on_message(command("permapin") & admin_filter )
+@app.on_message(command("permapin") & admin_filter)
 @language
 async def perma_pin(client, message: Message, _):
     if message.reply_to_message or len(message.text.split()) > 1:

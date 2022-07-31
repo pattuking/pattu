@@ -1,7 +1,8 @@
-from traceback import format_exc
 from typing import Tuple
+
 from pyrogram.types.messages_and_media.message import Message
-from Rose import app 
+
+from Rose import app
 from Rose.mongo.usersdb import Users
 
 
@@ -46,7 +47,7 @@ async def extract_user(c: app, m: Message) -> Tuple[int, str, str]:
                     user_id = user.id
                     user_first_name = user.first_name
                     user_name = user.username
-                except Exception as ef:
+                except Exception:
                     user_id = user_found
                     user_first_name = user_found
                     user_name = ""
@@ -67,7 +68,7 @@ async def extract_user(c: app, m: Message) -> Tuple[int, str, str]:
                     user = Users.get_user_info(user_id)
                     user_first_name = user["name"]
                     user_name = user["username"]
-                except Exception as ef:
+                except Exception:
                     try:
                         user = await c.get_users(user_id)
                     except Exception as ef:

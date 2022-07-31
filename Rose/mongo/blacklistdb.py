@@ -1,5 +1,5 @@
 from threading import RLock
-from time import time
+
 from Rose.mongo import MongoDB
 
 INSERTION_LOCK = RLock()

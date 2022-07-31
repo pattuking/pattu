@@ -1,43 +1,44 @@
-#====================================================================================================
+# ====================================================================================================
 # Copyright (c) 2021 Itz-fork
 # Part of: Nexa-Userbot
 # re-write for @szrosebot by szsupunma
-#====================================================================================================
+# ====================================================================================================
+
+from re import compile, search
 
 from pyrogram import filters
 from pyrogram.types import Message
-from re import search
-from Rose import app as NEXAUB
-from Rose.utils.custom_filters import admin_filter
-from Rose import app
-from Rose.mongo.antilang import (
-    set_anti_func,
-    del_anti_func,
-    get_anti_func
-)
-from re import compile
-from pyrogram.types import  Message
-from Rose.utils.lang import language
-from lang import get_command
-from Rose.utils.commands import command
+
 from button import F_sub
+from lang import get_command
+from Rose import app
+from Rose import app as NEXAUB
+from Rose.mongo.antilang import del_anti_func, get_anti_func, set_anti_func
+from Rose.utils.commands import command
+from Rose.utils.custom_filters import admin_filter
 from Rose.utils.filter_groups import antifunc_group
+from Rose.utils.lang import language
+
 
 async def edit_or_reply(message, text, parse_mode="md"):
     if message.from_user.id:
         if message.reply_to_message:
             kk = message.reply_to_message.id
-            return await message.reply_text(text, reply_to_message_id=kk, parse_mode=parse_mode)
+            return await message.reply_text(
+                text, reply_to_message_id=kk, parse_mode=parse_mode
+            )
         return await message.reply_text(text, parse_mode=parse_mode)
     return await message.edit(text, parse_mode=parse_mode)
 
+
 class REGEXES:
-    arab = compile('[\u0627-\u064a]')
-    chinese = compile('[\u4e00-\u9fff]')
-    japanese = compile('[(\u30A0-\u30FF|\u3040-\u309Fー|\u4E00-\u9FFF)]')
-    sinhala = compile('[\u0D80-\u0DFF]')
-    tamil = compile('[\u0B02-\u0DFF]')
-    cyrillic = compile('[\u0400-\u04FF]')
+    arab = compile("[\u0627-\u064a]")
+    chinese = compile("[\u4e00-\u9fff]")
+    japanese = compile("[(\u30A0-\u30FF|\u3040-\u309Fー|\u4E00-\u9FFF)]")
+    sinhala = compile("[\u0D80-\u0DFF]")
+    tamil = compile("[\u0B02-\u0DFF]")
+    cyrillic = compile("[\u0400-\u04FF]")
+
 
 def get_arg(message):
     msg = message.text
@@ -46,6 +47,7 @@ def get_arg(message):
     if " ".join(split[1:]).strip() == "":
         return ""
     return " ".join(split[1:])
+
 
 ANTIF_WARNS_DB = {}
 ANTIF_TO_DEL = {}
@@ -79,6 +81,7 @@ RUSIA = get_command("RUSIA")
 SINHALA = get_command("SINHALA")
 TAMIL = get_command("TAMIL")
 
+
 @app.on_message(command(ARABIC) & admin_filter)
 @language
 async def on_off_antiarab(client, message: Message, _):
@@ -93,7 +96,10 @@ async def on_off_antiarab(client, message: Message, _):
         await del_anti_func(message.chat.id)
     else:
         return await sex.edit(_["antil3"])
-    await sex.edit(f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Arabic Detection Guard**")
+    await sex.edit(
+        f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Arabic Detection Guard**"
+    )
+
 
 @app.on_message(command(CHINA) & admin_filter)
 @language
@@ -109,7 +115,10 @@ async def on_off_antiarab(client, message: Message, _):
         await del_anti_func(message.chat.id)
     else:
         return await lel.edit(_["antil4"])
-    await lel.edit(f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Chinese Detection Guard**")
+    await lel.edit(
+        f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Chinese Detection Guard**"
+    )
+
 
 @app.on_message(command(JAPAN) & admin_filter)
 @language
@@ -125,7 +134,10 @@ async def on_off_antiarab(client, message: Message, _):
         await del_anti_func(message.chat.id)
     else:
         return await sum.edit(_["antil5"])
-    await sum.edit(f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Japanese Detection Guard**")
+    await sum.edit(
+        f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Japanese Detection Guard**"
+    )
+
 
 @app.on_message(command(RUSIA) & admin_filter)
 @language
@@ -141,7 +153,10 @@ async def on_off_antiarab(client, message: Message, _):
         await del_anti_func(message.chat.id)
     else:
         return await sax.edit(_["antil6"])
-    await sax.edit(f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Russian Detection Guard**")
+    await sax.edit(
+        f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Russian Detection Guard**"
+    )
+
 
 @app.on_message(command(SINHALA) & admin_filter)
 @language
@@ -157,7 +172,10 @@ async def on_off_antiarab(client, message: Message, _):
         await del_anti_func(message.chat.id)
     else:
         return await sax.edit(_["antil7"])
-    await sax.edit(f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Sinhala Detection Guard**")
+    await sax.edit(
+        f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Sinhala Detection Guard**"
+    )
+
 
 @app.on_message(command(TAMIL) & admin_filter)
 @language
@@ -173,7 +191,10 @@ async def on_off_antiarab(client, message: Message, _):
         await del_anti_func(message.chat.id)
     else:
         return await sax.edit(_["antil8"])
-    await sax.edit(f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Tamil Detection Guard**")
+    await sax.edit(
+        f"✅ **Successfully** `{'Enabled' if lower_args=='on' else 'Disabled'}` **Tamil Detection Guard**"
+    )
+
 
 async def anti_func_handler(_, __, msg):
     chats = await get_anti_func(msg.chat.id)
@@ -182,15 +203,17 @@ async def anti_func_handler(_, __, msg):
     else:
         False
 
+
 async def check_admin(msg, user_id):
     if msg.chat.type in ["group", "supergroup", "channel"]:
-        how_usr = await app.get_chat_members(msg.chat.id,user_id)
+        how_usr = await app.get_chat_members(msg.chat.id, user_id)
         if how_usr.status in ["creator", "administrator"]:
             return True
         else:
             return False
     else:
         return True
+
 
 async def check_afdb(user_id):
     if user_id in ANTIF_WARNS_DB:
@@ -202,6 +225,7 @@ async def check_afdb(user_id):
         ANTIF_WARNS_DB[user_id] = 1
         return False
 
+
 async def warn_or_ban(message, mode):
     users = message.new_chat_members
     chat_id = message.chat.id
@@ -210,7 +234,10 @@ async def warn_or_ban(message, mode):
         mdnrgx = FORM_AND_REGEXES[mode]
         if users:
             for user in users:
-                if any(search(mdnrgx[0], name) for name in [user.first_name, user.last_name]):
+                if any(
+                    search(mdnrgx[0], name)
+                    for name in [user.first_name, user.last_name]
+                ):
                     await NEXAUB.ban_chat_member(chat_id, user.id)
                     await message.reply(BAN_EVENT_TXT.format(user.mention, mdnrgx[1]))
         elif message.text:
@@ -220,16 +247,25 @@ async def warn_or_ban(message, mode):
                 if not await check_admin(message, tuser.id):
                     if await check_afdb(tuser.id):
                         await NEXAUB.ban_chat_member(chat_id, tuser.id)
-                        await message.reply(BAN_EVENT_TXT.format(tuser.mention, mdnrgx[1]))
+                        await message.reply(
+                            BAN_EVENT_TXT.format(tuser.mention, mdnrgx[1])
+                        )
                     await message.delete()
-                    rp = await message.reply(WARN_EVEN_TXT.format(tuser.mention, mdnrgx[1], ANTIF_WARNS_DB[tuser.id]))
+                    rp = await message.reply(
+                        WARN_EVEN_TXT.format(
+                            tuser.mention, mdnrgx[1], ANTIF_WARNS_DB[tuser.id]
+                        )
+                    )
                     if chat_id in ANTIF_TO_DEL:
-                        await NEXAUB.delete_messages(chat_id=chat_id, message_ids=ANTIF_TO_DEL[chat_id])
+                        await NEXAUB.delete_messages(
+                            chat_id=chat_id, message_ids=ANTIF_TO_DEL[chat_id]
+                        )
                     ANTIF_TO_DEL[chat_id] = [rp.message_id]
     except:
         pass
 
-@app.on_message((filters.new_chat_members | filters.text),group=antifunc_group )
+
+@app.on_message((filters.new_chat_members | filters.text), group=antifunc_group)
 async def check_anti_funcs(_, message: Message):
     anti_func_det = await get_anti_func(message.chat.id)
     if not anti_func_det:
@@ -237,7 +273,6 @@ async def check_anti_funcs(_, message: Message):
     if anti_func_det[0] != "on":
         return
     await warn_or_ban(message, anti_func_det[1])
-
 
 
 __MODULE__ = F_sub

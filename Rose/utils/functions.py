@@ -3,7 +3,9 @@ from os import execvp
 from re import findall
 from re import sub as re_sub
 from sys import executable
+
 from pyrogram.types import Message
+
 from Rose import aiohttpsession as aiosession
 from Rose.mongo.restart import *
 
@@ -13,9 +15,11 @@ async def restart(m: Message):
         await start_restart_stage(m.chat.id, m.message_id)
     execvp(executable, [executable, "-m", "Rose"])
 
+
 async def get_http_status_code(url: str) -> int:
     async with aiosession.head(url) as resp:
         return resp.status
+
 
 def get_urls_from_text(text: str) -> bool:
     regex = r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]
@@ -50,6 +54,7 @@ async def extract_userid(message, text: str):
         except ValueError:
             return False
         return True
+
     text = text.strip()
     if is_int(text):
         return int(text)

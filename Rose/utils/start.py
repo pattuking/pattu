@@ -1,7 +1,6 @@
 from pyrogram.types import Message
-from Rose import *
-from Rose.mongo.rulesdb import Rules
 
+from Rose.mongo.rulesdb import Rules
 
 
 async def get_private_rules(_, m: Message, help_option: str):
@@ -23,6 +22,7 @@ async def get_private_rules(_, m: Message, help_option: str):
         disable_web_page_preview=True,
     )
     return ""
+
 
 async def get_learn(_, m: Message, help_option: str):
     await m.reply_text(
@@ -54,5 +54,3 @@ try me now 😉
         disable_web_page_preview=True,
     )
     return ""
-
-

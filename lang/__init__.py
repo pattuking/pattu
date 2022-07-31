@@ -1,15 +1,19 @@
 import os
 from typing import List
+
 import yaml
 
 languages = {}
 commands = {}
 
+
 def get_command(value: str) -> List:
     return commands["command"][value]
 
+
 def get_string(lang: str):
     return languages[lang]
+
 
 for filename in os.listdir(r"./lang"):
     if filename.endswith(".yml"):
@@ -20,9 +24,7 @@ for filename in os.listdir(r"./lang"):
 
 for filename in os.listdir(r"./lang/langs/"):
     if "en" not in languages:
-        languages["en"] = yaml.safe_load(
-            open(r"./lang/langs/en.yml", encoding="utf8")
-        )
+        languages["en"] = yaml.safe_load(open(r"./lang/langs/en.yml", encoding="utf8"))
     if filename.endswith(".yml"):
         language_name = filename[:-4]
         if language_name == "en":

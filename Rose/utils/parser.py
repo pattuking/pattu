@@ -1,7 +1,9 @@
 from html import escape
 from re import compile as compilere
 from re import sub
+
 from pyrogram.types import InlineKeyboardButton
+
 
 async def cleanhtml(raw_html: str) -> str:
     cleanr = compilere("<.*?>")
@@ -25,8 +27,8 @@ async def mention_markdown(name: str, user_id: int) -> str:
 def parser(text):
     btn_regex = compile(r"(\[([^\[]+?)\]\((link|cdata):(?:/{0,2})(.+?)(:same)?\))")
     if "alert" in text:
-        text = (text.replace("\n", "\\n").replace("\t", "\\t"))
-    buttons, outtext, prev = [],"", 0
+        text = text.replace("\n", "\\n").replace("\t", "\\t")
+    buttons, outtext, prev = [], "", 0
     for match in btn_regex.finditer(text):
         n_escapes = 0
         to_check = match.start(1) - 1
@@ -34,30 +36,45 @@ def parser(text):
             n_escapes += 1
             to_check -= 1
         if n_escapes % 2 == 0:
-            outtext += text[prev:match.start(1)]
+            outtext += text[prev : match.start(1)]
             prev = match.end(1)
             if match.group(3) == "cdata":
                 if bool(match.group(5)) and buttons:
-                    buttons[-1].append(InlineKeyboardButton(
-                        text=match.group(2),
-                        callback_data=match.group(4).replace(" ", "")))
+                    buttons[-1].append(
+                        InlineKeyboardButton(
+                            text=match.group(2),
+                            callback_data=match.group(4).replace(" ", ""),
+                        )
+                    )
                 else:
-                    buttons.append([InlineKeyboardButton(
-                        text=match.group(2),
-                        callback_data=match.group(4).replace(" ", ""))])
+                    buttons.append(
+                        [
+                            InlineKeyboardButton(
+                                text=match.group(2),
+                                callback_data=match.group(4).replace(" ", ""),
+                            )
+                        ]
+                    )
             else:
                 if bool(match.group(5)) and buttons:
-                    buttons[-1].append(InlineKeyboardButton(
-                        text=match.group(2),
-                        url=match.group(4).replace(" ", "")))
+                    buttons[-1].append(
+                        InlineKeyboardButton(
+                            text=match.group(2), url=match.group(4).replace(" ", "")
+                        )
+                    )
                 else:
-                    buttons.append([InlineKeyboardButton(
-                        text=match.group(2),
-                        url=match.group(4).replace(" ", ""))])
+                    buttons.append(
+                        [
+                            InlineKeyboardButton(
+                                text=match.group(2), url=match.group(4).replace(" ", "")
+                            )
+                        ]
+                    )
         else:
             outtext += text[prev:to_check]
             prev = match.start(1) - 1
-    else : outtext += text[prev:]
+    else:
+        outtext += text[prev:]
     try:
         return outtext, buttons
     except:

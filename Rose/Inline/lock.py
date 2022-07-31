@@ -1,6 +1,7 @@
-from Rose import bot as app
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+from Rose import bot as app
 
 supunma = """
 **Basic Locktypes available for a chat: **
@@ -41,6 +42,7 @@ anonchannel
 Rose will delete user's message if locked content is sent
 """
 
+
 @app.on_callback_query(filters.regex("_ucd"))
 async def commands_callbacc(_, CallbackQuery):
     await CallbackQuery.message.edit(
@@ -51,25 +53,14 @@ async def commands_callbacc(_, CallbackQuery):
 
 
 asuttons = InlineKeyboardMarkup(
-        [[
-            InlineKeyboardButton
-                (
-                    " Lock Types", callback_data="_ucd"
-                ),            
-            InlineKeyboardButton
-                (
-                    "Permissions Locks", callback_data="_kcd"
-                ) 
-        ],
+    [
         [
-            InlineKeyboardButton
-                (
-                    "Examples", callback_data="_lcd"
-                )
+            InlineKeyboardButton(" Lock Types", callback_data="_ucd"),
+            InlineKeyboardButton("Permissions Locks", callback_data="_kcd"),
         ],
-        [
-            InlineKeyboardButton('« Back', callback_data='bot_commands')
-        ]]
+        [InlineKeyboardButton("Examples", callback_data="_lcd")],
+        [InlineKeyboardButton("« Back", callback_data="bot_commands")],
+    ]
 )
 
 supunm = """
@@ -89,6 +80,8 @@ pin_messages
 all_permissions
 
 """
+
+
 @app.on_callback_query(filters.regex("_kcd"))
 async def commands_callbacc(_, CallbackQuery):
     await CallbackQuery.message.edit(
@@ -107,6 +100,7 @@ supunmas = """
 > /lock sticker photo gif video
 
 """
+
 
 @app.on_callback_query(filters.regex("_lcd"))
 async def commands_callbacc(_, CallbackQuery):

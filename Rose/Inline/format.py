@@ -1,6 +1,7 @@
-from Rose import bot as app
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+from Rose import bot as app
 
 text = """
 **Formatting**
@@ -10,17 +11,16 @@ options to make your messages more expressive. Take a look!
 """
 
 fbuttons = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('Markdown', callback_data="_mdown"),
-        InlineKeyboardButton('Fillings', callback_data='_fillings')
-        ],
+    [
         [
-        InlineKeyboardButton('Random Content', callback_data="_random")
+            InlineKeyboardButton("Markdown", callback_data="_mdown"),
+            InlineKeyboardButton("Fillings", callback_data="_fillings"),
         ],
-        [InlineKeyboardButton('« Back', callback_data='bot_commands')
-        ]]
-  
+        [InlineKeyboardButton("Random Content", callback_data="_random")],
+        [InlineKeyboardButton("« Back", callback_data="bot_commands")],
+    ]
 )
+
 
 @app.on_callback_query(filters.regex("_mdownsl"))
 async def commands_callbacc(_, CallbackQuery):
@@ -30,10 +30,9 @@ async def commands_callbacc(_, CallbackQuery):
         disable_web_page_preview=True,
     )
 
+
 close = InlineKeyboardMarkup(
-        [[
-            InlineKeyboardButton('« Back', callback_data='_mdownsl')
-        ]], 
+    [[InlineKeyboardButton("« Back", callback_data="_mdownsl")]],
 )
 
 tex = """
@@ -69,11 +68,9 @@ the user will be redirected to Rose's PM to see the note.
 @app.on_callback_query(filters.regex("_mdown"))
 async def commands_callbacc(_, CallbackQuery):
     await CallbackQuery.message.edit(
-        text=tex,
-        reply_markup=close,
-        disable_web_page_preview=True,
-        parse_mode="html"
+        text=tex, reply_markup=close, disable_web_page_preview=True, parse_mode="html"
     )
+
 
 tet = """
 **Fillings**
@@ -98,6 +95,8 @@ You can also customise the contents of your message with contextual data. For ex
 - Mention a user in the welcome message
 -> /setwelcome Welcome `{mention}` to `{chatname}`!
 """
+
+
 @app.on_callback_query(filters.regex("_fillings"))
 async def commands_callbacc(_, CallbackQuery):
     await CallbackQuery.message.edit(
@@ -107,8 +106,7 @@ async def commands_callbacc(_, CallbackQuery):
     )
 
 
-
-tetx="""
+tetx = """
 Another thing that can be fun, is to randomise the contents of a message.
 Make things a little more personal by changing welcome messages, or 
 changing notes!
@@ -133,6 +131,8 @@ Ooooh, {first} is in the house!
 Welcome to the group, {first}!
 ```
 """
+
+
 @app.on_callback_query(filters.regex("_random"))
 async def commands_callbacc(_, CallbackQuery):
     await CallbackQuery.message.edit(
@@ -140,4 +140,3 @@ async def commands_callbacc(_, CallbackQuery):
         reply_markup=close,
         disable_web_page_preview=True,
     )
-

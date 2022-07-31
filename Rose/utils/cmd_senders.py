@@ -1,6 +1,7 @@
 from Rose import app
 from Rose.utils.msg_types import Types
 
+
 async def send_cmd(client: app, msgtype: int):
     GET_FORMAT = {
         Types.TEXT.value: client.send_message,

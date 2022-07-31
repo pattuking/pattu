@@ -1,4 +1,5 @@
 from threading import RLock
+
 from Rose.mongo import MongoDB
 
 INSERTION_LOCK = RLock()
@@ -6,6 +7,7 @@ INSERTION_LOCK = RLock()
 
 class Approve(MongoDB):
     db_name = "approve"
+
     def __init__(self, chat_id: int) -> None:
         super().__init__(self.db_name)
         self.chat_id = chat_id
@@ -62,11 +64,9 @@ class Approve(MongoDB):
             self.insert_one(new_data)
             return new_data
         return chat_data
-        
+
     def migrate_chat(self, new_chat_id: int):
         old_chat_db = self.find_one({"_id": self.chat_id})
         new_data = old_chat_db.update({"_id": new_chat_id})
         self.insert_one(new_data)
         self.delete_one({"_id": self.chat_id})
-
- 

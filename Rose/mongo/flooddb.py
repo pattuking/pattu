@@ -1,5 +1,6 @@
 from Rose.mongo import flooddb
 
+
 async def is_flood_on(chat_id: int) -> bool:
     chat = await flooddb.find_one({"chat_id": chat_id})
     if not chat:

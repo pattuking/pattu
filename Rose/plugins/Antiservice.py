@@ -1,20 +1,17 @@
 from pyrogram import filters
-from Rose import app,dbn
-from Rose.mongo.antiservice import (
-    antiservice_on,
-    antiservice_off,
-    is_antiservice_on
-)
-from Rose.utils.filter_groups import service
-from lang import get_command
-from pyrogram.types import Message
-from Rose.utils.lang import language
-from pyrogram.types import InlineKeyboardButton
-from Rose.utils.custom_filters import can_change_filter
+from pyrogram.types import InlineKeyboardButton, Message
+
 from button import formatting
+from lang import get_command
+from Rose import app
+from Rose.mongo.antiservice import antiservice_off, antiservice_on, is_antiservice_on
+from Rose.utils.custom_filters import can_change_filter
+from Rose.utils.filter_groups import service
+from Rose.utils.lang import language
 
 command = []
 ANTI_SERV = get_command("ANTI_SERV")
+
 
 @app.on_message(filters.command(ANTI_SERV) & can_change_filter)
 @language
@@ -33,6 +30,7 @@ async def anti_service(client, message: Message, _):
     else:
         await message.reply_text(_["serv1"])
 
+
 @app.on_message(filters.service, group=service)
 async def delete_service(_, message):
     chat_id = message.chat.id
@@ -41,7 +39,7 @@ async def delete_service(_, message):
             return await message.delete()
     except Exception:
         pass
-    
+
 
 __MODULE__ = formatting
 __HELP__ = f"""
@@ -49,4 +47,10 @@ __HELP__ = f"""
 Rose supports a large number of formatting options to make
 your messages more expressive. Take a look!
 """
-__helpbtns__ = ([[InlineKeyboardButton('Markdown ', callback_data="_mdown"),InlineKeyboardButton('Fillings', callback_data='_fillings')],[InlineKeyboardButton('Random Content', callback_data="_random")]])
+__helpbtns__ = [
+    [
+        InlineKeyboardButton("Markdown ", callback_data="_mdown"),
+        InlineKeyboardButton("Fillings", callback_data="_fillings"),
+    ],
+    [InlineKeyboardButton("Random Content", callback_data="_random")],
+]

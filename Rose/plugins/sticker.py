@@ -1,26 +1,25 @@
-
-import os
-import math
 import imghdr
+import math
+import os
 from asyncio import gather
-from PIL import Image
 from traceback import format_exc
 from typing import List
-from pyrogram import filters
-from Rose import app,BOT_USERNAME
+
+from PIL import Image
+from pyrogram import Client, errors, filters, raw
 from pyrogram.errors import (
-                        PeerIdInvalid,
-                        ShortnameOccupyFailed,
-                        StickerEmojiInvalid,
-                        StickerPngDimensions,
-                        StickerPngNopng,
-                        UserIsBlocked,
+    PeerIdInvalid,
+    ShortnameOccupyFailed,
+    StickerEmojiInvalid,
+    StickerPngDimensions,
+    StickerPngNopng,
+    UserIsBlocked,
 )
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from pyrogram import Client, errors, raw
 from pyrogram.file_id import FileId
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from button import Sticker
+from Rose import BOT_USERNAME, app
 
 MAX_STICKERS = 120
 SUPPORTED_TYPES = ["jpeg", "png", "webp"]
@@ -36,6 +35,7 @@ async def sticker_id(_, message: Message):
         return await message.reply("Reply to a sticker.")
     await message.reply_text(f"`{reply.sticker.file_id}`")
 
+
 @app.on_message(filters.command("getsticker") & ~filters.edited)
 async def sticker_image(_, message: Message):
     reply = message.reply_to_message
@@ -45,39 +45,61 @@ async def sticker_image(_, message: Message):
         return await message.reply("Reply to a sticker.")
     m = await message.reply("`Sending..`")
     f = await reply.download(f"{reply.sticker.file_unique_id}.png")
-    await gather(*[message.reply_photo(f),message.reply_document(f)])
+    await gather(*[message.reply_photo(f), message.reply_document(f)])
     await m.delete()
     os.remove(f)
 
+
 async def get_sticker_set_by_name(
-        client: Client, name: str
+    client: Client, name: str
 ) -> raw.base.messages.StickerSet:
     try:
-        return await client.send(raw.functions.messages.GetStickerSet(stickerset=raw.types.InputStickerSetShortName(short_name=name),hash=0))
+        return await client.send(
+            raw.functions.messages.GetStickerSet(
+                stickerset=raw.types.InputStickerSetShortName(short_name=name), hash=0
+            )
+        )
     except errors.exceptions.not_acceptable_406.StickersetInvalid:
         return None
 
-async def create_sticker_set(
-        client: Client,
-        owner: int,
-        title: str,
-        short_name: str,
-        stickers: List[raw.base.InputStickerSetItem],
-) -> raw.base.messages.StickerSet:
-    return await client.send(raw.functions.stickers.CreateStickerSet(user_id=await client.resolve_peer(owner),title=title,short_name=short_name,stickers=stickers))
 
-async def add_sticker_to_set(
-        client: Client,
-        stickerset: raw.base.messages.StickerSet,
-        sticker: raw.base.InputStickerSetItem,
+async def create_sticker_set(
+    client: Client,
+    owner: int,
+    title: str,
+    short_name: str,
+    stickers: List[raw.base.InputStickerSetItem],
 ) -> raw.base.messages.StickerSet:
     return await client.send(
-        raw.functions.stickers.AddStickerToSet(stickerset=raw.types.InputStickerSetShortName(short_name=stickerset.set.short_name),sticker=sticker))
+        raw.functions.stickers.CreateStickerSet(
+            user_id=await client.resolve_peer(owner),
+            title=title,
+            short_name=short_name,
+            stickers=stickers,
+        )
+    )
+
+
+async def add_sticker_to_set(
+    client: Client,
+    stickerset: raw.base.messages.StickerSet,
+    sticker: raw.base.InputStickerSetItem,
+) -> raw.base.messages.StickerSet:
+    return await client.send(
+        raw.functions.stickers.AddStickerToSet(
+            stickerset=raw.types.InputStickerSetShortName(
+                short_name=stickerset.set.short_name
+            ),
+            sticker=sticker,
+        )
+    )
+
 
 async def create_sticker(
-        sticker: raw.base.InputDocument, emoji: str
+    sticker: raw.base.InputDocument, emoji: str
 ) -> raw.base.InputStickerSetItem:
     return raw.types.InputStickerSetItem(document=sticker, emoji=emoji)
+
 
 async def resize_file_to_sticker_size(file_path: str) -> str:
     im = Image.open(file_path)
@@ -105,42 +127,56 @@ async def resize_file_to_sticker_size(file_path: str) -> str:
     finally:
         im.save(file_path)
 
+
 async def upload_document(
-        client: Client, file_path: str, chat_id: int
+    client: Client, file_path: str, chat_id: int
 ) -> raw.base.InputDocument:
     media = await client.send(
         raw.functions.messages.UploadMedia(
             peer=await client.resolve_peer(chat_id),
             media=raw.types.InputMediaUploadedDocument(
-                mime_type=client.guess_mime_type(file_path)
-                          or "application/zip",
+                mime_type=client.guess_mime_type(file_path) or "application/zip",
                 file=await client.save_file(file_path),
-                attributes=[raw.types.DocumentAttributeFilename(file_name=os.path.basename(file_path))])))
+                attributes=[
+                    raw.types.DocumentAttributeFilename(
+                        file_name=os.path.basename(file_path)
+                    )
+                ],
+            ),
+        )
+    )
     return raw.types.InputDocument(
         id=media.document.id,
         access_hash=media.document.access_hash,
         file_reference=media.document.file_reference,
     )
 
+
 async def get_document_from_file_id(
-        file_id: str,
+    file_id: str,
 ) -> raw.base.InputDocument:
     decoded = FileId.decode(file_id)
-    return raw.types.InputDocument(id=decoded.media_id,access_hash=decoded.access_hash,file_reference=decoded.file_reference)
+    return raw.types.InputDocument(
+        id=decoded.media_id,
+        access_hash=decoded.access_hash,
+        file_reference=decoded.file_reference,
+    )
+
 
 @app.on_message(filters.command("kang") & ~filters.edited)
 async def kang(client, message: Message):
     if not message.reply_to_message:
         return await message.reply_text("Reply to a sticker/image to kang it.")
     if not message.from_user:
-        return await message.reply_text("Kang stickers in my pm.\nNeed User Acconut you are group /:")
+        return await message.reply_text(
+            "Kang stickers in my pm.\nNeed User Acconut you are group /:"
+        )
     msg = await message.reply_text("`Kanging Sticker..`")
 
     args = message.text.split()
     if len(args) > 1:
         sticker_emoji = str(args[1])
-    elif (message.reply_to_message.sticker and message.reply_to_message.sticker.emoji
-    ):
+    elif message.reply_to_message.sticker and message.reply_to_message.sticker.emoji:
         sticker_emoji = message.reply_to_message.sticker.emoji
     else:
         sticker_emoji = "🥰"
@@ -148,7 +184,11 @@ async def kang(client, message: Message):
     try:
         if message.reply_to_message.sticker:
             sticker = await create_sticker(
-                await get_document_from_file_id(message.reply_to_message.sticker.file_id),sticker_emoji)
+                await get_document_from_file_id(
+                    message.reply_to_message.sticker.file_id
+                ),
+                sticker_emoji,
+            )
         elif doc:
             if doc.file_size > 10000000:
                 return await msg.edit("File size too large.")
@@ -160,7 +200,9 @@ async def kang(client, message: Message):
                 temp_file_path = await resize_file_to_sticker_size(temp_file_path)
             except OSError as e:
                 await msg.edit_text("Something wrong happened.")
-                raise Exception(f"Something went wrong while resizing the sticker (at {temp_file_path}); {e}")
+                raise Exception(
+                    f"Something went wrong while resizing the sticker (at {temp_file_path}); {e}"
+                )
             sticker = await create_sticker(
                 await upload_document(client, temp_file_path, message.chat.id),
                 sticker_emoji,
@@ -185,16 +227,21 @@ async def kang(client, message: Message):
             stickerset = await get_sticker_set_by_name(client, packname)
             if not stickerset:
                 stickerset = await create_sticker_set(
-                    client,message.from_user.id,f"{message.from_user.first_name[:32]}'s pack",packname,[sticker])
+                    client,
+                    message.from_user.id,
+                    f"{message.from_user.first_name[:32]}'s pack",
+                    packname,
+                    [sticker],
+                )
             elif stickerset.set.count >= MAX_STICKERS:
                 packnum += 1
                 packname = (
-                        "f"
-                        + str(packnum)
-                        + "_"
-                        + str(message.from_user.id)
-                        + "_by_"
-                        + BOT_USERNAME
+                    "f"
+                    + str(packnum)
+                    + "_"
+                    + str(message.from_user.id)
+                    + "_by_"
+                    + BOT_USERNAME
                 )
                 limit += 1
                 continue
@@ -214,9 +261,13 @@ async def kang(client, message: Message):
         keyboard = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text="Start", url=f"t.me/{BOT_USERNAME}")]]
         )
-        await msg.edit("You Need To Start A Private Chat With Me.",reply_markup=keyboard)
+        await msg.edit(
+            "You Need To Start A Private Chat With Me.", reply_markup=keyboard
+        )
     except StickerPngNopng:
-        await message.reply_text("Stickers must be png files but the provided image was not a png")
+        await message.reply_text(
+            "Stickers must be png files but the provided image was not a png"
+        )
     except StickerPngDimensions:
         await message.reply_text("The sticker png dimensions are invalid.")
 

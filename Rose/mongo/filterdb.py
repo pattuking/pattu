@@ -1,4 +1,5 @@
 from threading import RLock
+
 from Rose.mongo import MongoDB
 from Rose.utils.msg_types import Types
 
@@ -33,7 +34,6 @@ class Filters(MongoDB):
                 },
             )
 
-
     def get_filter(self, st: int, keyword: str):
         with INSERTION_LOCK:
             curr = self.find_one({"chat_id": st, "keyword": keyword})
@@ -64,7 +64,6 @@ class Filters(MongoDB):
     def count_filters_all(self):
         with INSERTION_LOCK:
             return self.count()
-
 
     def count_filter_aliases(self):
         with INSERTION_LOCK:

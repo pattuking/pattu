@@ -1,23 +1,22 @@
 from html import escape
+
 from pyrogram import filters
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-)
-from Rose.__main__ import HELPABLE
-from Rose import  app
-from Rose.mongo.disabledb import Disabling
-from Rose.core.decorators.permissions import adminsOnly
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+
 from lang import get_command
+from Rose import app
+from Rose.__main__ import HELPABLE
+from Rose.core.decorators.permissions import adminsOnly
+from Rose.mongo.disabledb import Disabling
 from Rose.utils.lang import language
 
-DISABLE  = get_command("DISABLE")
+DISABLE = get_command("DISABLE")
 DISABLEDEL = get_command("DISABLEDEL")
-ENABLE  = get_command("ENABLE")
+ENABLE = get_command("ENABLE")
 DISABLEABLE = get_command("DISABLEABLE")
 DISABLED = get_command("DISABLED")
 ENABLEALL = get_command("ENABLEALL")
+
 
 @app.on_message(filters.command(DISABLE))
 @adminsOnly("can_delete_messages")
@@ -26,9 +25,7 @@ async def disableit(client, message: Message, _):
     if len(message.text.split()) < 2:
         return await message.reply_text(_["disable1"])
     disable_cmd_keys = sorted(
-        k
-        for j in [HELPABLE[i]["disablable"] for i in list(HELPABLE.keys())]
-        for k in j
+        k for j in [HELPABLE[i]["disablable"] for i in list(HELPABLE.keys())] for k in j
     )
     db = Disabling(message.chat.id)
     disable_list = db.get_disabled()
@@ -69,7 +66,7 @@ async def set_dsbl_action(client, message: Message, _):
 @app.on_message(filters.command(ENABLE))
 @adminsOnly("can_delete_messages")
 @language
-async def enableit(client, message: Message, _):  
+async def enableit(client, message: Message, _):
     if len(message.text.split()) < 2:
         return await message.reply_text(_["disable8"])
     db = Disabling(message.chat.id)
@@ -82,11 +79,9 @@ async def enableit(client, message: Message, _):
 
 @app.on_message(filters.command(DISABLEABLE))
 @adminsOnly("can_delete_messages")
-async def disabling(_, m: Message): 
+async def disabling(_, m: Message):
     disable_cmd_keys = sorted(
-        k
-        for j in [HELPABLE[i]["disablable"] for i in list(HELPABLE.keys())]
-        for k in j
+        k for j in [HELPABLE[i]["disablable"] for i in list(HELPABLE.keys())] for k in j
     )
     tes = "List of commnds that can be disabled:\n"
     tes += "\n".join(f" • <code>{escape(i)}</code>" for i in disable_cmd_keys)
@@ -96,7 +91,7 @@ async def disabling(_, m: Message):
 @app.on_message(filters.command(DISABLED))
 @adminsOnly("can_delete_messages")
 @language
-async def disabled(client, message: Message, _): 
+async def disabled(client, message: Message, _):
     db = Disabling(message.chat.id)
     disable_list = db.get_disabled()
     if not disable_list:
@@ -109,15 +104,27 @@ async def disabled(client, message: Message, _):
 @app.on_message(filters.command(ENABLEALL))
 @adminsOnly("can_delete_messages")
 @language
-async def rm_alldisbl(client, message: Message, _): 
+async def rm_alldisbl(client, message: Message, _):
     db = Disabling(message.chat.id)
     all_dsbl = db.get_disabled()
     if not all_dsbl:
         return await message.reply_text(_["disable9"])
     return await message.reply_text(
         "Are you sure you want to enable all?",
-        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("✅ Confirm",callback_data="enableallcmds",),InlineKeyboardButton("Cancel", callback_data="close_data")]]))
-    
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        "✅ Confirm",
+                        callback_data="enableallcmds",
+                    ),
+                    InlineKeyboardButton("Cancel", callback_data="close_data"),
+                ]
+            ]
+        ),
+    )
+
+
 __MODULE__ = "Disabling"
 __HELP__ = """
 This allows you to disable some commonly used commands,

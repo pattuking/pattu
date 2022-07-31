@@ -1,6 +1,7 @@
-from Rose import bot as app
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton,InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+from Rose import bot as app
 
 texts = """
 Here is the help for Welcome:
@@ -23,12 +24,14 @@ Examples:
 """
 
 fbuttonss = InlineKeyboardMarkup(
-        [[
-        InlineKeyboardButton('captcha', callback_data="_filling"),
-        InlineKeyboardButton('Formatting', callback_data='_mdownsl')
-        ]]
-  
+    [
+        [
+            InlineKeyboardButton("captcha", callback_data="_filling"),
+            InlineKeyboardButton("Formatting", callback_data="_mdownsl"),
+        ]
+    ]
 )
+
 
 @app.on_callback_query(filters.regex("_mdowns"))
 async def commands_callbacc(_, CallbackQuery):
@@ -36,8 +39,9 @@ async def commands_callbacc(_, CallbackQuery):
         text=texts,
         reply_markup=fbuttonss,
         disable_web_page_preview=True,
-        parse_mode="html"
+        parse_mode="html",
     )
+
 
 tetz = """
 Rose which will ask new Group Members to verify them by solving an emoji | number captcha.
@@ -47,6 +51,8 @@ Rose which will ask new Group Members to verify them by solving an emoji | numbe
 
 for more help ask in my support group
 """
+
+
 @app.on_callback_query(filters.regex("_filling"))
 async def commands_callbacc(_, CallbackQuery):
     await CallbackQuery.message.edit(
@@ -57,7 +63,5 @@ async def commands_callbacc(_, CallbackQuery):
 
 
 close = InlineKeyboardMarkup(
-        [[
-            InlineKeyboardButton('« Back', callback_data='_mdowns')
-        ]], 
+    [[InlineKeyboardButton("« Back", callback_data="_mdowns")]],
 )

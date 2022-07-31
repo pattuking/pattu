@@ -1,17 +1,19 @@
+import logging
+
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup,Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+
+from button import Connections
+from lang import get_command
+from Rose import BOT_USERNAME, app
 from Rose.mongo.connectiondb import (
     add_connection,
-    all_connections, 
-    if_active, 
-    delete_connection)
-import logging
-from Rose import app,BOT_USERNAME
-from lang import get_command
+    all_connections,
+    delete_connection,
+    if_active,
+)
 from Rose.utils.commands import command
 from Rose.utils.lang import language
-from button import Connections
-
 
 CONNECT = get_command("CONNECT")
 DISCONNECT = get_command("DISCONNECT")
@@ -19,7 +21,6 @@ CONNECTIONS = get_command("CONNECTIONS")
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
-
 
 
 @app.on_message((filters.private | filters.group) & command(CONNECT))
@@ -39,23 +40,38 @@ async def addconnection(client, message: Message, _):
         group_id = message.chat.id
     try:
         st = await app.get_chat_member(group_id, userid)
-        if (st.status != "administrator" and st.status != "creator"):
+        if st.status != "administrator" and st.status != "creator":
             return await message.reply_text(_["connection3"])
     except Exception as e:
         logger.exception(e)
         return await message.reply_text(_["connection4"])
     try:
-        connection = InlineKeyboardMarkup([[
-            InlineKeyboardButton(text="Connect me pm",url=f"t.me/{BOT_USERNAME}?start=connections")]])
+        connection = InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        text="Connect me pm",
+                        url=f"t.me/{BOT_USERNAME}?start=connections",
+                    )
+                ]
+            ]
+        )
         st = await app.get_chat_member(group_id, "me")
         if st.status == "administrator":
             ttl = await app.get_chat(group_id)
             title = ttl.title
             addcon = await add_connection(str(group_id), str(userid))
             if addcon:
-                await message.reply_text(_["connection5"].format(title),reply_markup= connection,quote=True,parse_mode="md")
+                await message.reply_text(
+                    _["connection5"].format(title),
+                    reply_markup=connection,
+                    quote=True,
+                    parse_mode="md",
+                )
                 if chat_type in ["group", "supergroup"]:
-                    await app.send_message(userid,f"Connected to **{title}** !",parse_mode="md")
+                    await app.send_message(
+                        userid, f"Connected to **{title}** !", parse_mode="md"
+                    )
             else:
                 await message.reply_text(_["connection6"])
         else:
@@ -78,7 +94,7 @@ async def deleteconnection(client, message: Message, _):
     elif chat_type in ["group", "supergroup"]:
         group_id = message.chat.id
         st = await app.get_chat_member(group_id, userid)
-        if (st.status != "administrator"and st.status != "creator"):
+        if st.status != "administrator" and st.status != "creator":
             return
         delcon = await delete_connection(str(userid), str(group_id))
         if delcon:
@@ -101,17 +117,27 @@ async def connections(client, message: Message, _):
             title = ttl.title
             active = await if_active(str(userid), str(groupid))
             act = ":✅" if active else ":⛔️"
-            buttons.append([InlineKeyboardButton(text=f"{title}{act}", callback_data=f"groupcb:{groupid}:{act}")])
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        text=f"{title}{act}", callback_data=f"groupcb:{groupid}:{act}"
+                    )
+                ]
+            )
         except:
             pass
     if buttons:
-        await message.reply_text("""
+        await message.reply_text(
+            """
 **Current connected chats:**
 
 Connected = ✅
 Disconnect = ⛔️
 
-__Select a chat to connect:__""",reply_markup=InlineKeyboardMarkup(buttons),quote=True)
+__Select a chat to connect:__""",
+            reply_markup=InlineKeyboardMarkup(buttons),
+            quote=True,
+        )
     else:
         await message.reply_text(_["connection13"])
 

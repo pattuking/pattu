@@ -1,5 +1,4 @@
 from threading import RLock
-from time import time
 
 from Rose.mongo import MongoDB
 
@@ -50,8 +49,7 @@ class Warns(MongoDB):
         with INSERTION_LOCK:
             self.user_info = self.__ensure_in_db(user_id)
             return self.user_info["warns"], len(self.user_info["warns"])
-     
-        
+
     @staticmethod
     def count_all_chats_using_warns():
         with INSERTION_LOCK:
@@ -72,7 +70,6 @@ class Warns(MongoDB):
             collection = MongoDB(Warns.db_name)
             curr = collection.find_all()
             return sum(i["num_warns"] for i in curr if i["num_warns"] >= 1)
-
 
     def __ensure_in_db(self, user_id: int):
         chat_data = self.find_one({"chat_id": self.chat_id, "user_id": user_id})
@@ -103,11 +100,12 @@ class WarnSettings(MongoDB):
             self.insert_one(new_data)
             return new_data
         return chat_data
+
     def getall_warns(self, chat_id: int):
         with INSERTION_LOCK:
             self.chat_id = self.__ensure_in_db(chat_id)
             return self.chat_id["warns"], len(self.chat_id["warns"])
-        
+
     def get_warnings_settings(self):
         with INSERTION_LOCK:
             return self.chat_info

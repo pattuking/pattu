@@ -1,21 +1,23 @@
 import asyncio
 import time
+from datetime import datetime
 from inspect import getfullargspec
+
+import pymongo
+import pytz
 from aiohttp import ClientSession
 from motor.motor_asyncio import AsyncIOMotorClient
 from pyrogram import Client
 from pyrogram.types import Message
 from Python_ARQ import ARQ
-import asyncio
-from pyrogram import Client
-from config import *
-import pymongo
-import pytz
-from datetime import datetime
 
-IST = pytz.timezone('Asia/Colombo')
+from config import *
+
+IST = pytz.timezone("Asia/Colombo")
 time = datetime.now(IST)
-date = time.strftime("%a/%d/%b/%Y %H:%M:%S")#format can change any time if you want /:
+date = time.strftime(
+    "%a/%d/%b/%Y %H:%M:%S"
+)  # format can change any time if you want /:
 
 SUPPORT_GROUP = "https://t.me/pattuofficialxgod"
 SUDOERS = SUDO_USERS_ID
@@ -23,7 +25,7 @@ LOG_GROUP_ID = LOG_GROUP_ID
 MOD_LOAD = []
 MOD_NOLOAD = []
 bot_start_time = time.time()
-DB_URI = BASE_DB 
+DB_URI = BASE_DB
 MONGO_URL = MONGO_URL
 OWNER_ID = 5144627735
 
@@ -51,6 +53,7 @@ BOT_NAME = x.first_name + (x.last_name or "")
 BOT_USERNAME = x.username
 BOT_MENTION = x.mention
 BOT_DC_ID = x.dc_id
+
 
 async def eor(msg: Message, **kwargs):
     func = (

@@ -1,9 +1,11 @@
-from Rose import *
 import pymongo
+
+from Rose import *
 
 myclient = pymongo.MongoClient(DB_URI)
 dbx = myclient["supun"]
-nsfwdb = dbx['nsfw']
+nsfwdb = dbx["nsfw"]
+
 
 async def is_nsfw_on(chat_id: int) -> bool:
     chat = await nsfwdb.find_one({"chat_id": chat_id})

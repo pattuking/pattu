@@ -2,7 +2,9 @@ from html import escape
 from re import compile as compile_re
 from time import time
 from typing import List
+
 from pyrogram.types import InlineKeyboardButton, Message
+
 from Rose.utils.parser import escape_markdown
 
 BTN_URL_REGEX = compile_re(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\))")
@@ -11,7 +13,7 @@ BTN_URL_REGEX = compile_re(r"(\[([^\[]+?)\]\(buttonurl:(?:/{0,2})(.+?)(:same)?\)
 async def extract_time(m: Message, time_val: str):
     if any(time_val.endswith(unit) for unit in ("m", "h", "d")):
         unit = time_val[-1]
-        time_num = time_val[:-1]  
+        time_num = time_val[:-1]
         if not time_num.isdigit():
             await m.reply("Unspecified amount of time.")
             return ""
@@ -143,7 +145,7 @@ async def escape_mentions_using_curly_brackets(
 async def split_quotes(text: str):
     if not any(text.startswith(char) for char in START_CHAR):
         return text.split(None, 1)
-    counter = 1 
+    counter = 1
     while counter < len(text):
         if text[counter] == "\\":
             counter += 1

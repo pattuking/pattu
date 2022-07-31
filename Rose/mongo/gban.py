@@ -1,5 +1,6 @@
 from datetime import datetime
 from threading import RLock
+
 from Rose.mongo import MongoDB
 
 INSERTION_LOCK = RLock()
@@ -36,7 +37,7 @@ class GBan(MongoDB):
     def remove_gban(self, user_id: int):
         global ANTISPAM_BANNED
         with INSERTION_LOCK:
-    
+
             if self.find_one({"_id": user_id}):
                 return self.delete_one({"_id": user_id})
 

@@ -1,1 +1,1 @@
-from .misc import paginate_modules 
+from .misc import paginate_modules

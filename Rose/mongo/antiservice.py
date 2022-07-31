@@ -1,5 +1,6 @@
 from Rose.mongo import antiservicedb
 
+
 async def is_antiservice_on(chat_id: int) -> bool:
     chat = await antiservicedb.find_one({"anti_service": chat_id})
     if not chat:
