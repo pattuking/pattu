@@ -70,7 +70,7 @@ async def start_bot():
  _____________________________________________   
 |                                             |  
 |          Deployed Successfully              |  
-|         (C) 2021-2022 by @szteambots        | 
+|         (C) 2021-2022 by @BlackLover_Network| 
 |          Greetings from supun  :)           |
 |_____________________________________________|""")
     await idle()
@@ -168,10 +168,9 @@ async def start(client, message: Message, _):
 Hey there {message.from_user.mention}, 
 ᴍʏ ɴᴀᴍᴇ ɪs {BOT_NAME} 🔱  ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ғᴏʀ ᴜ ɢʀᴏᴜᴘ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ ᴀʟʟ ʏᴏᴜʀ ɴᴇᴇᴅs . Fᴇᴇʟ ғʀᴇᴇ ᴛᴏ ᴀᴅᴅ ᴍᴇ ᴛᴏ ᴜʀ ᴋɪɴɢᴅᴏᴍ 🔱!
 """
-			(
-			reply_markup=home_keyboard_pm)
-    return await add_served_user(chat_id) 
 
+reply_markup=home_keyboard_pm)
+    return await add_served_user(chat_id)
 
 @app.on_message(filters.command(HELP_COMMAND))
 @language
