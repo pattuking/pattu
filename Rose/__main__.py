@@ -248,11 +248,12 @@ async def startcq(client,CallbackQuery, _):
     for user in users:
         served_users.append(int(user["bot_users"]))
     await CallbackQuery.message.edit(
-            text=f"""
+text=f"""
 Hey there {CallbackQuery.from_user.mention}, 
  ᴍʏ ɴᴀᴍᴇ ɪs  ᴘᴀᴛᴛᴜ x ɢᴏᴅ 🔱  ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ᴛᴇʟᴇɢʀᴀᴍ ɢʀᴏᴜᴘ ᴍᴀɴᴀɢᴇᴍᴇɴᴛ ғᴏʀ ᴜ ɢʀᴏᴜᴘ ᴘʀᴏᴛᴇᴄᴛɪᴏɴ ᴀʟʟ ʏᴏᴜʀ ɴᴇᴇᴅs . Fᴇᴇʟ ғʀᴇᴇ ᴛᴏ ᴀᴅᴅ ᴍᴇ ᴛᴏ ᴜʀ ᴋɪɴɢᴅᴏᴍ 🔱!
-""",reply_markup=home_keyboard_pm)
-""",disable_web_page_preview=True,reply_markup=home_keyboard_pm)
+"""
+	reply_markup=home_keyboard_pm)
+disable_web_page_preview=True,reply_markup=home_keyboard_pm)
 
 
 async def help_parser(name, keyboard=None):
